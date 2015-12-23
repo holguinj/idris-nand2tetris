@@ -190,7 +190,7 @@ sum100 = [ (AInstruction (integerToBinary 17))  -- @i
          , (AInstruction (integerToBinary 17))  -- @i
          , (CInstruction CM DD JNull)           -- D=M
          , (AInstruction (integerToBinary 18))  -- @sum
-         , (CInstruction CDPlusM DM JNull)      -- @M=D+M
+         , (CInstruction CDPlusM DM JNull)      -- M=D+M
          , (AInstruction (integerToBinary 17))  -- @i
          , (CInstruction CMPlus1 DM JNull)      -- M=M+1
          , (AInstruction (integerToBinary 4))   -- @LOOP

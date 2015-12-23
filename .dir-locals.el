@@ -3,4 +3,4 @@
 
 ((idris-mode
   (idris-load-packages .
-                       ("contrib" "effects"))))
+                       ("contrib" "effects" "lightyear"))))

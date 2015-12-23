@@ -65,6 +65,9 @@ instance Show CompField where
   show CDAndM = "D&M"
   show CDOrM = "D|M"
 
+instance Eq CompField where
+  (==) a b = (show a) == (show b)
+
 data DestField = DNull
                | DM
                | DD
@@ -83,6 +86,9 @@ instance Show DestField where
   show DAM = "AM="
   show DAD = "AD="
   show DAMD = "AMD="
+
+instance Eq DestField where
+  (==) a b = (show a) == (show b)
 
 %name DestField dest
 
@@ -105,6 +111,9 @@ instance Show JumpField where
   show JLE = ";JLE"
   show JMP = ";JMP"
 
+instance Eq JumpField where
+  (==) a b = (show a) == (show b)
+
 %name JumpField jmp
 
 data Instruction = AInstruction Byte
@@ -114,3 +123,6 @@ data Instruction = AInstruction Byte
 instance Show Instruction where
   show (AInstruction xs) = "@" ++ (show $ cast {to=Integer} xs)
   show (CInstruction cmp dest jmp) = (show dest) ++ (show cmp) ++ (show jmp)
+
+instance Eq Instruction where
+  (==) a b = (show a) == (show b)
