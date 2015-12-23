@@ -1,0 +1,9 @@
+package nand2tetris
+
+modules = Nand2tetris.Asm, Nand2tetris.Bit, Nand2tetris.Emulator, Nand2tetris
+sourcedir = src
+
+opts = "-p contrib"
+
+main = Nand2tetris
+executable = nand2tetris
