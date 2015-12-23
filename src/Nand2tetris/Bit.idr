@@ -2,6 +2,8 @@ module Nand2tetris.Bit
 
 import Data.Vect
 
+%default total
+
 data Bit = O | I
 
 instance Cast Bit Integer where
@@ -59,15 +61,17 @@ instance Cast (Vect n Bit) Integer where
   cast bits = binToInteger bits
 
 isEven : Integer -> Bool
-isEven = (==0) . (flip mod 2)
+isEven = assert_total $ (==0) . (flip mod 2)
 
 integerToBinary' : (acc : List Bit) -> Integer -> List Bit
 integerToBinary' acc 0 = O :: acc
 integerToBinary' acc 1 = I :: acc
 integerToBinary' acc n =
   if isEven n
-    then integerToBinary' (O :: acc) (n `div` 2)
-    else integerToBinary' (I :: acc) (n `div` 2)
+    -- both of these are shrinking on the second argument, but Uncle Edwin
+    -- doesn't believe me.
+    then assert_total $ integerToBinary' (O :: acc) (n `div` 2)
+    else assert_total $ integerToBinary' (I :: acc) (n `div` 2)
 
 ||| Constructs a vector of size n given a list. Intended to be used with bytes,
 ||| so elements are added (as `def`) or dropped from the beginning if necessary.

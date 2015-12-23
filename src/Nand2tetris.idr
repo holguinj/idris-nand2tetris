@@ -1,6 +1,7 @@
 module Main
 
 import Nand2tetris.Asm
+import Nand2tetris.AsmGen
 import Nand2tetris.Emulator
 
 printSteps : MemoryState -> IO ()
@@ -14,7 +15,7 @@ printSteps mem =
 
 main : IO ()
 main =
-  let init = record { program = sum100 } initialMemory in
+  let init = record { program = Nand2tetris.AsmGen.sum100 } initialMemory in
     do putStrLn $ show init
        putStrLn ""
        printSteps init
