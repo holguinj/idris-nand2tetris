@@ -2,6 +2,7 @@ module Main
 
 import Nand2tetris.Asm
 import Nand2tetris.AsmGen
+import Nand2tetris.Bit
 import Nand2tetris.Emulator
 
 printSteps : MemoryState -> IO ()
@@ -12,6 +13,9 @@ printSteps mem =
     Just new => do putStrLn $ show new
                    putStrLn ""
                    printSteps new
+
+assemble : List String -> List Byte
+assemble lines = ?assemble_rhs
 
 main : IO ()
 main =

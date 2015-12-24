@@ -19,6 +19,7 @@ data MetaInstruction = ALabel String
 ||| instruction type.
 data ParseResult = Meta MetaInstruction
                  | Native Instruction
+                 | Comment String
 
 instance Eq ParseResult where
   (==) (Meta (ALabel x)) (Meta (ALabel y)) = x == y
@@ -104,6 +105,13 @@ jumpField = (string ";JGT" *> return JGT)
         <|> (string "" *> return JNull)
         <?> "Jump Field"
 
+comment : Parser ParseResult
+comment =
+  do spaces
+     string "//"
+     cmt <- (manyTill anyChar endOfLine) <|> many anyChar
+     pure $ Comment $ trim $ pack cmt
+
 cInstruction : Parser ParseResult
 cInstruction =
   do dest <- destField
@@ -119,8 +127,14 @@ instruction' = aInstruction
 
 instruction : Parser ParseResult
 instruction =
-  do inst <- instruction'
+  do spaces
+     inst <- instruction'
+     spaces
+     opt endOfLine
      pure $ inst
+
+program : Parser (List ParseResult)
+program = many (comment <|> instruction)
 
 instructionExamples : List $ (String, ParseResult)
 instructionExamples = [ ("@1", Native (AInstruction (integerToBinary 1)))
@@ -185,3 +199,14 @@ testExamples parser (x :: xs) =
 
 testResults : List $ TestResult ParseResult
 testResults = testExamples instruction sum100
+
+
+proggy : String
+proggy = unlines
+         [ "D=M "
+         , "// hi mom"
+         , " //helllo"
+         , "A=1//sup"
+         , " D;JGT"
+         , "0;JMP //hellooooooo"
+         ]
