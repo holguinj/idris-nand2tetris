@@ -109,7 +109,7 @@ comment : Parser ParseResult
 comment =
   do spaces
      string "//"
-     cmt <- (manyTill anyChar endOfLine) <|> many anyChar
+     cmt <- many $ noneOf "\n"
      pure $ Comment $ trim $ pack cmt
 
 cInstruction : Parser ParseResult
@@ -131,7 +131,7 @@ instruction =
      inst <- instruction'
      spaces
      opt endOfLine
-     pure $ inst
+     pure inst
 
 program : Parser (List ParseResult)
 program = many (comment <|> instruction)
@@ -203,10 +203,30 @@ testResults = testExamples instruction sum100
 
 proggy : String
 proggy = unlines
-         [ "D=M "
-         , "// hi mom"
-         , " //helllo"
-         , "A=1//sup"
-         , " D;JGT"
-         , "0;JMP //hellooooooo"
+         [ "D=M " -- trailing ws
+         , "// hi mom" -- comment
+         , " //helllo" -- leading ws comment
+         , "A=1//sup" -- juxted comment
+         , "  D=1//sup" -- juxted comment, leading ws
+         , " D;JGT   " -- hella ws
+         , "0;JMP //hellooooooo" -- final comment
          ]
+
+badproggy : String
+badproggy = unlines
+            [ "D=M " -- trailing ws
+            , "// hi mom" -- comment
+            , " //helllo" -- leading ws comment
+            , "DMA=1" -- explosion!
+            , "  D=1//sup" -- juxted comment, leading ws
+            , " D;JGT   " -- hella ws
+            , "0;JMP //hellooooooo" -- final comment
+            ]
+
+badLine : String
+badLine = "DMA=1"
+
+badLineTest : Bool
+badLineTest = case parse program badLine of
+                Left _ => True
+                Right _ => False
