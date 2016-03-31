@@ -6,13 +6,15 @@ import Data.SortedMap
 import Nand2tetris.Bit
 import Nand2tetris.Asm
 
+%access public export
+
 ||| The two hardware registers, A and D.
 record RealRegisters where
   constructor MkRealRegisters
   aReg : Byte
   dReg : Byte
 
-instance Show RealRegisters where
+implementation Show RealRegisters where
   show (MkRealRegisters aReg dReg) =
     "Register A=" ++ (show $ cast {to=Integer} aReg) ++ "\n" ++
     "Register D=" ++ (show $ cast {to=Integer} dReg)
@@ -47,7 +49,7 @@ showMem memoryMap =
           val = show $ cast {to=Integer} b in
         addr ++ "=" ++ val
 
-instance Show MemoryState where
+implementation Show MemoryState where
   show (MkMemoryState program programCounter memoryMap registers) =
     "Program=" ++ (show $ map show program) ++ "\n" ++
     "PC=" ++ (show programCounter) ++ "\n" ++

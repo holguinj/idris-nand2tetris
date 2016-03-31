@@ -3,20 +3,21 @@ module Nand2tetris.Bit
 import Data.Vect
 
 %default total
+%access public export
 
 data Bit = O | I
 
-instance Cast Bit Integer where
+implementation Cast Bit Integer where
   cast O = 0
   cast I = 1
 
-instance Eq Bit where
+implementation Eq Bit where
   (==) O O = True
   (==) O I = False
   (==) I O = False
   (==) I I = True
 
-instance Ord Bit where
+implementation Ord Bit where
   compare O O = EQ
   compare O I = LT
   compare I O = GT
@@ -56,7 +57,7 @@ binToInteger [] = 0
 binToInteger (O :: xs) = uBinToInteger xs
 binToInteger (I :: xs) = (-1) + (uBinToInteger $ not xs) * (-1)
 
-instance Cast (Vect n Bit) Integer where
+implementation Cast (Vect n Bit) Integer where
   cast [] = 0
   cast bits = binToInteger bits
 

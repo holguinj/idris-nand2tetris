@@ -4,6 +4,8 @@ import Data.Vect
 
 import Nand2tetris.Bit
 
+%access public export
+
 data CompField = C0
                | C1
                | CNeg1
@@ -35,7 +37,7 @@ data CompField = C0
 
 %name CompField cmp
 
-instance Show CompField where
+implementation Show CompField where
   show C0 = "0"
   show C1 = "1"
   show CNeg1 = "-1"
@@ -65,7 +67,7 @@ instance Show CompField where
   show CDAndM = "D&M"
   show CDOrM = "D|M"
 
-instance Eq CompField where
+implementation Eq CompField where
   (==) a b = (show a) == (show b)
 
 data DestField = DNull
@@ -77,7 +79,7 @@ data DestField = DNull
                | DAD
                | DAMD
 
-instance Show DestField where
+implementation Show DestField where
   show DNull = ""
   show DM = "M="
   show DD = "D="
@@ -87,7 +89,7 @@ instance Show DestField where
   show DAD = "AD="
   show DAMD = "AMD="
 
-instance Eq DestField where
+implementation Eq DestField where
   (==) a b = (show a) == (show b)
 
 %name DestField dest
@@ -101,7 +103,7 @@ data JumpField = JNull
                | JLE
                | JMP
 
-instance Show JumpField where
+implementation Show JumpField where
   show JNull = ""
   show JGT = ";JGT"
   show JEQ = ";JEQ"
@@ -111,7 +113,7 @@ instance Show JumpField where
   show JLE = ";JLE"
   show JMP = ";JMP"
 
-instance Eq JumpField where
+implementation Eq JumpField where
   (==) a b = (show a) == (show b)
 
 %name JumpField jmp
@@ -120,9 +122,9 @@ data Instruction = AInstruction Byte
                  | CInstruction CompField DestField JumpField
 %name Instruction inst
 
-instance Show Instruction where
+implementation Show Instruction where
   show (AInstruction xs) = "@" ++ (show $ cast {to=Integer} xs)
   show (CInstruction cmp dest jmp) = (show dest) ++ (show cmp) ++ (show jmp)
 
-instance Eq Instruction where
+implementation Eq Instruction where
   (==) a b = (show a) == (show b)

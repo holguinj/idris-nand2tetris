@@ -8,6 +8,7 @@ import Nand2tetris.AsmParse
 import Nand2tetris.Bit
 
 %default total
+%access public export
 
 SymbolTable : Type
 SymbolTable = List (String, Nat)
@@ -90,6 +91,7 @@ normalize xs =
         (Just addr) => AInstruction (integerToBinary $ cast addr) :: normalize' xs syms
     normalize' ((Meta (JumpTarget x)) :: xs) syms = normalize' xs syms
     normalize' ((Native inst) :: xs) syms = inst :: normalize' xs syms
+    normalize' ((Comment x) :: xs) syms = normalize' xs syms
 
 sum100 : List Instruction
 sum100 = normalize

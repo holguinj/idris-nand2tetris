@@ -11,6 +11,8 @@ import Lightyear.Strings
 import Nand2tetris.Asm
 import Nand2tetris.Bit
 
+%access public export
+
 ||| Types that only apply during compilation.
 data MetaInstruction = ALabel String
                      | JumpTarget String
@@ -19,12 +21,11 @@ data MetaInstruction = ALabel String
 ||| instruction type.
 data ParseResult = Meta MetaInstruction
                  | Native Instruction
-                 | Comment String
+                 | Comment
 
-instance Eq ParseResult where
+implementation Eq ParseResult where
   (==) (Meta (ALabel x)) (Meta (ALabel y)) = x == y
   (==) (Meta (JumpTarget x)) (Meta (JumpTarget y)) = x == y
-  (==) (Native x) (Native y) = x == y
   (==) _ _ = False
 
 labelString : Parser String
@@ -109,8 +110,8 @@ comment : Parser ParseResult
 comment =
   do spaces
      string "//"
-     cmt <- many $ noneOf "\n"
-     pure $ Comment $ trim $ pack cmt
+     manyTill anyChar endOfLine
+     pure Comment
 
 cInstruction : Parser ParseResult
 cInstruction =
@@ -130,8 +131,18 @@ instruction =
   do spaces
      inst <- instruction'
      spaces
-     opt endOfLine
      pure inst
+
+instructionWithComment : Parser ParseResult
+instructionWithComment =
+  do inst <- instruction
+     _ <- comment
+     pure inst
+
+programLine : Parser ParseResult
+programLine = instruction
+          <|> comment
+          <|> instructionWithComment
 
 program : Parser (List ParseResult)
 program = many (comment <|> instruction)
@@ -230,3 +241,10 @@ badLineTest : Bool
 badLineTest = case parse program badLine of
                 Left _ => True
                 Right _ => False
+
+data EqStatement = EqStmt String Integer
+
+-- commitment : Parser EqStatement
+-- commitment = do
+--   x <- anyChar >! (string "=") >! integer
+--   pure x 123
